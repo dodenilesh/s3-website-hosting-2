@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css">
+    <script src="jquery-3.1.1.min.js"></script>
+    <script src="knockout-3.4.2.js"></script>
+    <script type="text/javascript">
+
+
+        $(document).ready(function() {
+
+            var customerViewModel = function() {
+            var self = this;
+            self.firstName = ko.observable("");
+            self.lastName = ko.observable("");
+            self.emailId = ko.observable("");
+            self.searchKey = ko.observable("");
+
+            self.getCustomerDetails = function () {              
+                $.ajax({
+                    url: 'https://1cah5u64ok.execute-api.us-east-1.amazonaws.com/Dev/getcustomerdetailsbyemail',
+                    cache: false,
+                    type: 'GET',                   
+                    data: { "Email": self.searchKey() },
+                    success: function (data) {              
+                        self.firstName(data.Item.FirstName)
+                        self.lastName(data.Item.LastName),
+                        self.emailId(data.Item.Email)
+                    }
+                });
+            }
+        }
+
+            var viewModel = new customerViewModel();
+            ko.applyBindings(viewModel);
+         });
+
+       
+    </script>
+</head>
+<body>
+    <div id="box">
+    <h1>Find your details</h1>
+    <br/>
+    <br/>
+    <table>
+        <tr>
+            <td>Your Email?:</td>
+            <td><input type="text" id="txtSearchKey" data-bind="value : searchKey"/></td>
+            <td><input type="button" id="customerDetails" value="GetCustomerDetails" data-bind="click: $root.getCustomerDetails()"/></td>
+        </tr>
+    </table>
+
+    <br />
+  
+    <table id="CustomerDetails">
+        <thead>
+            <tr>
+                <td>First Name:</td>
+                <td><label id="firstName" data-bind="text: firstName"/></td>
+            </tr>
+
+            <tr>
+                <td>Last Name:</td>
+                <td><label id="lastName" data-bind="text: lastName"/></td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td><label id="emailId" data-bind="text: emailId"/></td>
+            </tr>
+          
+        </thead>
+      
+        </table>
+
+    <br />
+  
+  <table>
+
+  </table>
+</div>
+</body>
+
+</html>
